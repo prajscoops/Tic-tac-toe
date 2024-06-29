@@ -1,6 +1,7 @@
-import time
+#Setting the intial value of all boxes i.e. blank or whitespace
 e11 = e12 = e13 = e21 = e22 = e23 = e31 = e32 = e33 = '     '
 
+#Function to display introduction of the program and guide ob how to play 
 def intro():
     print("""\n\n============= Welcome to the game of Tic Tac Toe =============
 This is 2 player game where you wil be playing with your friend
@@ -11,45 +12,60 @@ where row is the horizontal axis and column is the vertical axis. For
 example, if you want to fill the box at thetop left corner, you need 
 to give the coordinates as '1 1'.""")
 
+#This function ask user whether to play again or not, if yes, it reset everybox for a new game and if no it shuts off the game 
 def game_reset():
     try:
         global e11, e12, e13, e21, e22, e23, e31, e32, e33
-        e11 = e12 = e13 = e21 = e22 = e23 = e31 = e32 = e33 = '     '
-        choice = input("\nDO YOU WANT TO PLAY AGAIN: (Y/N)  ").strip().lower()
+        e11 = e12 = e13 = e21 = e22 = e23 = e31 = e32 = e33 = '     '             #Resetting every block to default value
+        choice = input("\nDO YOU WANT TO PLAY AGAIN: (Y/N)  ").strip().lower()    #Asking to play again or not
         if choice == 'y'or choice == 'yes':
             print("\nSURE !\n\n")
-            main()
+            main()                                                                
         elif choice == 'n' or choice == 'no':
-            print("                               THANK YOU FOR PLAYING\n\n")
+            print("                               THANK YOU FOR PLAYING\n\n")     
             
         else:
             print("\nINVALID INPUT, TRY AGAIN")
-            game_reset()
+            game_reset()                                                          #If invalid input, trigger same function again
 
-    except KeyboardInterrupt:
+    except KeyboardInterrupt:                                                     #For intentional shut off during the game. Kill the the process in between
         print("\nIntentional shut off, shutting off game!! \n")
     except not KeyboardInterrupt:
-        print("\nAn Error occured, restarting the game!! \n")
+        print("\nAn Error occured, restarting the game!! \n")                    #If any error occured, start afresh
         restart()
 
+#Function to check winning or draw
 def game_check():
     global p1,p2
+    #Checking all possible winning conditions For X
     if (e11==e21==e31=='  X  ') or (e12==e22==e32=='  X  ') or (e13==e23==e33=='  X  ') or (e11==e12==e13=='  X  ') or (e21==e22==e23=='  X  ') or (e31==e32==e33=='  X  ') or (e11==e22==e33=='  X  ') or (e13==e22==e31=='  X  '):
         if p1 == 'X':
             print('                                  PLAYER 1 WINS!')
             return 'completed'
         else:
             print('                                  PLAYER 2 WINS!')
+    
+    #Checking all possible winning conditions For O
     elif (e11==e21==e31=='  O  ') or (e12==e22==e32=='  O  ') or (e13==e23==e33=='  O  ') or (e11==e12==e13=='  O  ') or (e21==e22==e23=='  O  ') or (e31==e32==e33=='  O  ') or (e11==e22==e33=='  O  ') or (e13==e22==e31=='  O  '):
         if p1 == 'O':
             print('                                  PLAYER 1 WINS!')
             return 'completed'
         else:
             print('                                  PLAYER 2 WINS!')
-    elif e11 != e12 != e13 != e11 != e12 != e13 != e11 != e12 != e13 != '     ':
-        print('                                          DRAW!')
-        return 'completed'
+            
+    #Checking for draw
+    #Even if 8 out of 9 elements are not matching the winning conditions, declare DRAW.
+    else:
+        e_list = [e11,e12,e13,e21,e22,e23,e31,e32,e33]
+        count = 0
+        for i in e_list:
+            if i != '     ':
+                count += 1
+        if count == 8:
+            print('                                       DRAW!')
+            return 'completed'
 
+#Prints the Tic-tac-toe grid
 def print_grid(): 
     print("\n                               ======TIKTACTOE======")
     print(f"""
@@ -62,6 +78,7 @@ def print_grid():
             """)
     print("                               =====================\n")
 
+#declares cross to particular coordinates
 def cross(coords):
     global e11, e12, e13, e21, e22, e23, e31, e32, e33
     if coords == '11' and e11 == '     ':
@@ -83,9 +100,10 @@ def cross(coords):
     elif coords == '33' and e33 == '     ':
         e33 = '  X  '
     else:
-        print('You can\'t place a cross there!\n')
-        return False
+        print('You can\'t place a cross there!\n') 
+        return False                              #If coordinate already filled or not available, return False
 
+#declares cross to particular coordinates
 def circle(coords):
     global e11, e12, e13, e21, e22, e23, e31, e32, e33    
     if coords == '11' and e11 == '     ':
@@ -108,56 +126,58 @@ def circle(coords):
         e33 = '  O  '
     else:
         print('You can\'t place a circle there!\n')
-        return False
+        return False                                 #If coordinate already filled or not available, return False
 
+#Restart game from here if any error occurs
 def restart():
     global e11, e12, e13, e21, e22, e23, e31, e32, e33
     e11 = e12 = e13 = e21 = e22 = e23 = e31 = e32 = e33 = '     '
     main()
 
+#Function that takes input from players and triggers most of the functions of the program.
 def player_input():
     try:
         print_grid()
         while True:
             if p1 == 'X':
                 player1 = input("PLAYER 1 select your block: ").strip().upper().replace(' ','')
-                crs = cross(player1)
+                crs = cross(player1)                                                    #Take coordinates and trigger function to place the element at required posn
                 if crs == False:
                     player1 = input("PLAYER 1 select your block: ").strip().upper().replace(' ','')
-                    crs = cross(player1)
+                    crs = cross(player1)                                               #If function returns False, ask again
                 print_grid()
-                gamecheck = game_check()
+                gamecheck = game_check()                    #Checks game condition
                 if gamecheck == 'completed':
-                    break
+                    break                                   #break loop if game completed
                 player2 = input("PLAYER 2 select your block: ").strip().upper().replace(' ','')
-                crl = circle(player2)
+                crl = circle(player2)                                                 #Take coordinates and trigger function to place the element at required posn
                 if crl == False:
                     player2 = input("PLAYER 2 select your block: ").strip().upper().replace(' ','')
-                    crl = circle(player2)
+                    crl = circle(player2)                                             #If function returns False, ask again
                 print_grid()
-                gamecheck = game_check()
+                gamecheck = game_check()                  #Checks game condition
                 if gamecheck == 'completed':
-                    break
+                    break                                 #break loop if game completed
 
             elif p1 == 'O':
                 player1 = input("PLAYER 1 select your block: ").strip().upper().replace(' ','')
-                crl = circle(player1)
+                crl = circle(player1)                                                    #Take coordinates and trigger function to place the element at required posn
                 if crl == False:
                     player1 = input("PLAYER 1 select your block: ").strip().upper().replace(' ','')
-                    crl = circle(player1)
+                    crl = circle(player1)                                                #If function returns False, ask again
                 print_grid()
-                gamecheck = game_check()
+                gamecheck = game_check()                  #Checks game condition
                 if gamecheck == 'completed':
-                    break
+                    break                                 #break loop if game completed
                 player2 = input("PLAYER 2 select your block: ").strip().upper().replace(' ','')
-                crs = cross(player2)
+                crs = cross(player2)                                                     #Take coordinates and trigger function to place the element at required posn
                 if crs == False:
                     player2 = input("PLAYER 2 select your block: ").strip().upper().replace(' ','')
-                    crs = cross(player2)
+                    crs = cross(player2)                                                 #If function returns False, ask again
                 print_grid()
-                gamecheck = game_check()
+                gamecheck = game_check()                 #Checks game condition
                 if gamecheck == 'completed':
-                    break
+                    break                                #break loop if game completed
         game_reset()
 
     except KeyboardInterrupt:
@@ -166,6 +186,7 @@ def player_input():
         print("\nAn Error occured, restarting the game!! \n")
         restart()
 
+#Main Function
 def main():
     intro()
     try:
@@ -180,8 +201,7 @@ def main():
             print(f"PLAYER 1: {p1}")
             print(f"PLAYER 2: {p2}")
         else:
-            print("Invalid input, please try again")
-            print()
+            print("Invalid input, please try again\n")
             main()
         player_input()
 
